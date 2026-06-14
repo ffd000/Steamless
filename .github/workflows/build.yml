@@ -36,5 +36,5 @@ jobs:
       with:
         name: steamless-${{ matrix.configuration }}
         path: |
-          **/bin/${{ matrix.configuration }}/**
-          !**/bin/${{ matrix.configuration }}/**/*.pdb
+          /bin/${{ matrix.configuration }}/
+          /bin/${{ matrix.configuration }}/*.pdb
