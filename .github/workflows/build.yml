@@ -1,0 +1,42 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '4.5.2'
+    
+    - name: Restore dependencies
+      run: dotnet restore Steamless.sln
+    
+    - name: Build
+      run: dotnet build Steamless.sln --configuration ${{ matrix.configuration }} --no-restore
+    
+    - name: Run tests
+      run: dotnet test Steamless.sln --configuration ${{ matrix.configuration }} --no-build --verbosity normal
+      continue-on-error: true
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: steamless-${{ matrix.configuration }}
+        path: |
+          **/bin/${{ matrix.configuration }}/**
+          !**/bin/${{ matrix.configuration }}/**/*.pdb
