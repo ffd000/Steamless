@@ -20,6 +20,13 @@ jobs:
     
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
+
+    - name: Install .NET Framework 4.5.2 Developer Pack
+      run: |
+        $url = "https://download.microsoft.com/download/B/2/4/B24BFB74-31CD-443B-84B9-6B2C9770DC2D/NDP452-DevPack-ENU.exe"
+        Invoke-WebRequest -Uri $url -OutFile "NDP452-DevPack.exe"
+        & ".\NDP452-DevPack.exe" /quiet /norestart
+        del ".\NDP452-DevPack.exe"
     
     - name: Restore dependencies
       run: nuget restore Steamless.sln
